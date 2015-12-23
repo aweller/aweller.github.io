@@ -25,6 +25,7 @@ angular.module('cv')
             };
 
             $scope.hello = 'HelloWorld!'
+
         }
     ]);
 
@@ -72,7 +73,9 @@ angular.module('cv')
                 var circle = svg.selectAll("circle")
                     .data(nodes)
                     .enter().append("circle")
-                    .attr("name", function(d){return d.name})
+                    .attr("name", function(d) {
+                        return d.name
+                    })
                     .attr("class", function(d) {
                         return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
                     })
@@ -156,18 +159,27 @@ angular.module('cv')
         }
 
         return {
+            link: SkillTreeDirective,
             templateUrl: 'app/templates/skill_tree.html',
             controllerAs: 'ctrl', // allow referencing the controller from the directive fn 
             bindToController: true, // bind incoming scope to controller (i.e. that.x instead of scope.x)
             scope: {},
-            controller: ['$scope', function($scope) {
+            controller: ['$scope', '$http', function($scope, $http) {
                 $scope.hello = 'The skillTree controller!'
                 this.skillFilePath = "app/data/skills.json"
 
                 this.state = {};
                 this.state.currentSelection = 'None'
-            }],
-            link: SkillTreeDirective
-        }
 
+                cv_url = "https://github.com/aweller/aweller.github.io/blob/master/app/data/cv.json"
+                console.log('Making $http request')
+                $http.get(cv_url).success(function(data) {
+                    console.log('Got data:', data).error(function(msg, code) {
+                        console.error(msg, code)
+                    })
+                })
+
+
+            }]
+        }
     });
