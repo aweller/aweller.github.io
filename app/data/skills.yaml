@@ -1,0 +1,98 @@
+- Domain knowledge:
+    - Biology:
+        - Evolution: 1000
+        - Population Genetics: 2000
+        - Genomics: 2000
+        - Molecular Biology: 1000
+
+    - DNA sequencing:
+        - Vendor ecosystem: 2000
+        - Variant calling: 2000
+        - Genome assembly: 500
+        - Application in academia, medicine and biotech: 2000
+
+    - Biotech + Medicine:
+        - Industry research: 2000
+        - Clinical diagnostics: 2000
+        - Cancer genomics: 500
+        - Interdisciplinary work: 2000
+
+###########################################################
+
+- Coding:
+    - Languages:
+        - Python:
+            - numpy: 1000
+            - pandas: 2000
+            - matplotlib: 1000
+            - ipython: 1000
+            - scikit-learn: 1000
+            - seaborn: 1000
+            - flask: 500
+
+        - JavaScript:
+            - Angular: 2000
+            - D3: 2000
+            - Crossfilter: 1000
+            - Bootstrap: 1000
+            - Bower: 1000
+            # - NPM: 1000
+            - Grunt: 1000
+            - Protractor: 500
+
+        - HTML: 1000
+        - CSS: 500
+        - Matlab/Octave: 500
+        - Latex: 500
+        - Bash: 1000
+
+    - Best practices:
+        - OOP: 1000
+        - Git: 1000
+        - Legacy codebases: 1000
+        - Unit testing: 1000
+        - End-to-end testing: 500
+        - Web design: 2000
+
+###########################################################
+
+- Data Analysis:
+
+    - Maths:
+        - Machine Learning:
+            - Unsupervised clustering: 2000
+            - SVM: 2000
+            - Neural Nets: 500
+        - Statistics: 1000
+        - Regression: 1000
+        - Hidden Markov Models: 2000
+        - Experimental Design: 1000
+
+    - Data engineering:
+        - Virtual Machines: 1000
+        - Linux servers: 2000
+        - Data pipelines : 2000
+        - SQL: 500
+        - MongoDB: 500
+        - Parallel processing: 2000
+        - Clusters computing: 1000
+
+        # - NginX: 1000
+        # - UWSGI: 1000
+        # - Gunicorn: 1000
+        # - Supervisor: 1000
+        
+    - Communication:
+        - Static visualisation (Python): 2000
+        - Interactive visualisation (JS): 2000
+        - Experienced coding teacher: 2000
+        - Cross-domain collaboration: 1000
+
+        # - Collaborative & Proactive : 1000
+        # - Curious about data: 1000
+        # - Hacker mindset: 1000
+        # - Passionate about problem-solving: 1000
+
+
+###########################################################
+

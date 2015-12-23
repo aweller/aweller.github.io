@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="cv" ng-controller="MainController">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Andreas Weller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.7">
+    <!-- <link rel="icon" type="image/png" href="app/images/snapper.png" /> -->
+
+    <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="app/css/flatly_bootstrap.css" />
+    <link rel="stylesheet" href="app/css/cv.css" />
+
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>   
+
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="app/app.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-default .navbar-fixed-top">
+        <div class="navbar-left">
+            <a class="navbar-brand" id="snappertitle" href="#">Andreas Weller</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li ng-class="{ active: isActive('/cv')}"><a href="#import">CV</a>
+            </li>
+            <li ng-class="{ active: isActive('/skills')}"><a href="#channels">Skills</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="main" ng-view>
+    </div>
+</body>
+
+</html>

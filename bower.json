@@ -1,0 +1,24 @@
+{
+  "name": "cv",
+  "version": "0.0.0",
+  "authors": [
+    "aweller <andreas.weller@nanoporetech.com>"
+  ],
+  "description": "Small Angular app for an interactive CV.",
+  "main": "app.js",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-bootstrap": "~0.14.3",
+    "d3": "~3.5.12",
+    "angular-route": "~1.4.8",
+    "bootstrap": "~3.3.6"
+  }
+}

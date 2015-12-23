@@ -1,0 +1,25 @@
+company,project,Evolution,Population Genetics,Genomics,Molecular Biology,Vendor ecosystem,Variant calling,Genome assembly,"Application in academia, medicine and biotech",Industry research,Clinical diagnostics,Cancer genomics,Interdisciplinary work,numpy,pandas,matplotlib,ipython,scikit-learn,seaborn,flask,Angular,D3,Crossfilter,Bootstrap,Bower,Grunt,Protractor,HTML,CSS,Matlab/Octave,Latex,Bash,OOP,Git,Legacy codebases,Unit testing,End-to-end testing,Web design,Unsupervised clustering,SVM,Neural Nets,Statistics,Regression,Hidden Markov Models,Experimental Design,Virtual Machines,Linux servers,Data pipelines,SQL,MongoDB,Parallel processing,Clusters computing,Static visualisation (Python),Interactive visualisation (JS),Experienced coding teacher,Cross-domain collaboration
+ONT,R+D data analysis for 3rd generation DNA sequencing technology,1,1,1,1,1,1,1,1,1,,,1,1,1,1,1,1,1,,,,,,,,,,,,,1,1,1,1,1,,,1,1,,1,1,1,1,1,1,1,1,1,1,1,1,,,1
+ONT,Python software engineering on large scientific codebase,,,,,1,1,1,1,1,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,1,1,1,1,1,,,1,1,,1,1,1,,1,1,1,1,1,1,1,1,,,1
+ONT,Development of interactive data analysis web apps in Angular.js + D3.js,,,,,,,,,1,,,1,1,1,1,1,,1,1,1,1,1,1,1,1,1,1,1,,,1,1,1,1,,1,1,,,,,,,,1,1,1,,,1,,,1,,1
+ONT,Machine learning for automated signal processing,,,,,,,,1,1,,,1,1,1,1,1,1,1,,,,,,,,,,,1,,1,1,1,,,,,1,1,1,1,1,1,,1,1,1,,,1,,1,,,1
+ONT,Teaching of in-house Python courses,,,,,,,,,1,,,1,1,1,1,1,,1,,,,,,,,,,,,,1,1,1,,,,,,,,,,,,,,,,,1,,1,,1,1
+ONT,Customer interaction at conferences,,,,,1,1,1,,1,,,1,,,,,,,,,,,,,,,,,,,,,1,,,,,,,,,,,,,,,,,,,,,,1
+COURSE,Led 1-week coding classes for up to 15 scientists,,,,,,,,,,,,1,1,1,1,1,,1,,,,,,,,,,,,,1,1,1,,,1,1,,,,,,,,,,,,,1,,1,1,1,1
+COURSE,Classes held at the Max Planck Institute Tübingen and Oxford University,,,,,,,,,,,,1,1,1,1,1,,1,,,,,,,,,,,,,1,1,1,,,,,,,,,,,,,,,,,1,,1,1,1,1
+LIFE,Developed custom software for clinical sequencing QC,,,,,1,1,1,1,1,1,1,1,1,1,1,1,,1,,,,,,,,,,,,,1,1,1,1,1,,,1,1,,,,,1,1,1,1,,,1,,1,,,1
+LIFE,Developed whole-genome sequencing + analysis pipelines ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,1,1,1,1,1,,,1,1,,,,,1,1,1,1,,,1,,1,,,1
+LIFE,Analysed tumour-normal exome data in colorectal cancer and leukemia,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,1,1,1,1,,,,,1,1,,1,1,,1,1,1,1,1,1,1,1,1,,,1
+COMPU,Reached out to potential clients via email and at scientific meetings,,,,,1,1,1,1,1,,,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,1,,,1
+COMPU,Planned next-generation sequencing projects with clients,1,1,1,1,1,1,1,1,1,,,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,1,,,,,,,,1,,,1
+PHD,Conducted independent scientific project;,1,1,1,1,1,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,,,,,,,1,1,,1,,,,,,,,1,,,1
+PHD,Performed NGS experiments from wetlab to bioinformatics;,1,1,1,1,1,1,1,1,,,,1,1,1,1,1,,1,,,,,,,,,,,,,1,1,,,,,,,,,1,1,,1,1,1,1,,,1,,1,,,1
+PHD,Presented results in front of 100+ scientists.,1,1,1,1,1,1,1,,,,,1,,,,,,,,,,,,,,,,,,1,,,,,,,,,,,1,1,,,,,,,,,,1,,,1
+PHD,Analyzed data for a diverse range of collaborators from evolutionary biology to protein design.,1,1,1,1,1,1,1,1,,,,1,1,1,1,1,1,1,,,,,,,,,,,,,1,1,,,,,,1,1,,1,1,,1,1,1,1,1,1,1,1,1,,,1
+PHD,GWAS pipelines,1,1,1,1,1,1,1,1,,,,,1,1,1,1,,1,,,,,,,,,,,,,1,1,,,,,,,,,1,1,,,,,1,,,1,,,,,1
+PHD,high-density linkage maps,1,1,1,1,1,1,1,1,,,,,1,1,1,1,,1,,,,,,,,,,,,,1,1,,,,,,,,,1,1,,,,,1,,,1,,1,,,1
+PHD,improvement of the reference genome,1,1,1,1,1,1,1,1,,,,,1,1,1,1,,1,,,,,,,,,,,,,1,1,,,,,,,,,1,1,,,,,1,1,1,1,1,,,,1
+PHD,databases of genomic features,1,1,1,1,1,1,1,1,,,,,1,1,1,1,,1,,,,,,,,,,,,,1,1,,,,,,,,,,,,,,,1,,,1,,,,,1
+PHD,custom Python modules and parsers,,,,,,,,,,,,,1,1,1,1,1,1,,,,,,,,,,,,,1,1,1,,,,,,,,,,,,1,1,1,,,1,,1,,,1
+PHD,automated primer design,1,1,1,1,,,,,,,,,1,1,1,1,,1,,,,,,,,,,,,,1,1,,,,,,,,,,,,,,,1,,,1,,,,,1
+PHD,automated trait quantification both in the wetlab and in silico,1,1,1,1,,,,,,,,1,1,1,1,1,1,1,,,,,,,,,,,,,1,1,,,,,,,,,,,,,,,1,,,1,,1,,,1

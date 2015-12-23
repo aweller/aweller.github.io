@@ -1,0 +1,50 @@
+Data Scientist
+Oxford Nanopore Technologies
+Juni 2014 – Heute (1 Jahr 7 Monate)Oxford, Großbritannien
+* R+D data analysis for 3rd generation DNA sequencing technology
+* Python software engineering on large scientific codebase
+* Development of interactive data analysis web apps in Angular.js + D3.js
+* Machine learning for automated signal processing
+* Teaching of in-house Python courses
+* Customer interaction at conferences
+Python Instructor
+Various Non Profit organizations
+August 2012 – Heute (3 Jahre 5 Monate)
+Taught Python for data analysis in the Life Sciences.
+
+* Led 1-week coding classes for up to 15 scientists
+* Classes held at the Max Planck Institute Tübingen and Oxford University
+Bioinformatics Scientist
+Life Technologies + Oxford University
+September 2013 – Juni 2014 (10 Monate)Oxford, Großbritannien
+Paved the way for the adoption of NGS in clinical diagnostics.
+
+* Developed custom software for clinical sequencing QC
+* Developed whole-genome sequencing + analysis pipelines 
+* Analysed tumour-normal exome data in colorectal cancer and leukemia
+Project Manager
+Computomics GmbH & Co. KG
+März 2013 – September 2013 (7 Monate)
+Provided genomic data analysis to diverse plant breeders.
+
+* Reached out to potential clients via email and at scientific meetings
+* Planned next-generation sequencing projects with clients
+PhD Student
+MPI for Developmental Biology
+September 2007 – September 2013 (6 Jahre 1 Monat)Tübingen und Umgebung, Deutschland
+PhD project title: "Genome evolution in the nematode Pristionchus pacificus"
+
+* Conducted independent scientific project;
+* Performed NGS experiments from wetlab to bioinformatics;
+* Presented results in front of 100+ scientists.
+* Analyzed data for a diverse range of collaborators from evolutionary biology to protein design.
+
+* Developed software libraries and methodologies for:
+
+* GWAS pipelines
+* high-density linkage maps
+* improvement of the reference genome
+* databases of genomic features
+* custom Python modules and parsers
+* automated primer design
+* automated trait quantification both in the wetlab and in silico
