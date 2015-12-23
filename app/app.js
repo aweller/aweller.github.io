@@ -57,7 +57,7 @@ angular.module('cv')
                 .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
             d3.json(ctrl.skillFilePath, function(error, root) {
-                if (error) throw error;yaml_to_json.py
+                if (error) throw error;
 
                 var focus = root,
                     nodes = pack.nodes(root),
