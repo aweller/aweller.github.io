@@ -63,6 +63,9 @@ angular.module('cv')
                 var focus = root,
                     nodes = pack.nodes(root),
                     view;
+                    leafs = nodes.filter(function(d){
+                  return !d.children;
+                })
 
                 function nodeMouseIn() {
                     console.log('nodeMouseIn!', [this, this.__data__.name])
@@ -100,6 +103,7 @@ angular.module('cv')
                     .text(function(d) {
                         return d.name;
                     });
+
 
                 var node = svg.selectAll("circle,text");
 
@@ -150,6 +154,37 @@ angular.module('cv')
                     });
                 }
 
+                ///////////////////////////////////////////////////
+                
+                // var leafs = svg.selectAll("circle")
+                //     .data(leafs)
+                //     .enter().append("circle")
+                //     .attr("name", function(d) {
+                //         return d.name
+                //     })
+                //     .on("mouseenter", nodeMouseIn);
+
+                // function leafMouseIn() {
+                //     console.log('leafMouseIn!', [this, this.__data__.name])
+                //     ctrl.state.currentSelection = this.__data__.name
+                //     scope.$apply();
+                // }
+
+                // var leafs = node.filter(function(d){
+                //   return !d.children;
+                // }).on("mouseenter", leafMouseIn);
+                // console.log('leafs', leafs)
+
+                // svg.selectAll("circle")
+                //     .data(leafs)
+                //     .enter().append("circle")
+                //     .on("mouseenter", leafMouseIn);
+
+                // .append("rect")
+                // .attr("width", function(d) { return d.r; })
+                // .attr("height", function(d) { return d.r; })
+                // .attr("x", function(d) { return -d.r/2; })
+                // .attr("y", function(d) { return -d.r/2; });
 
 
             });
@@ -165,21 +200,28 @@ angular.module('cv')
             bindToController: true, // bind incoming scope to controller (i.e. that.x instead of scope.x)
             scope: {},
             controller: ['$scope', '$http', function($scope, $http) {
+                
+                var that = this
+
                 $scope.hello = 'The skillTree controller!'
-                this.skillFilePath = "app/data/skills.json"
+                that.skillFilePath = "app/data/skills.json"
 
-                this.state = {};
-                this.state.currentSelection = 'None'
+                that.state = {};
+                that.state.currentSelection = 'None'
+                that.state.cv_data = {}
 
-                cv_url = "https://github.com/aweller/aweller.github.io/blob/master/app/data/cv.json"
-                console.log('Making $http request')
-                $http.get(cv_url).success(function(data) {
-                    console.log('Got data:', data).error(function(msg, code) {
+                cv_url = "http://aweller.github.io/app/data/cv.json"
+                $http({
+                    method: 'get',
+                    url: cv_url
+                }).then(
+                    function(response) {
+                        console.log('Got data:', response)
+                        that.state.cv_data = response.data
+                    },
+                    function(msg, code) {
                         console.error(msg, code)
-                    })
-                })
-
-
+                    });
             }]
         }
     });
