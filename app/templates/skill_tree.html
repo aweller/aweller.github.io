@@ -5,7 +5,13 @@
     <div class='row'>
         Current selection: {{ctrl.state.currentSelection}}
     </div>
-    <div class='row'>
-        {{ctrl.state.cv_data}}
+<!--     <div class='row'>
+        {{ctrl.state.cv_data[ctrl.state.currentSelection]}}
+    </div> -->
+    <div class='row' ng-repeat='place in ctrl.currentWorkplaces'>
+        <h4>{{ctrl.prettyWorkplaces[place]}}</h4>
+        <div class='row' ng-repeat='project in ctrl.state.cv_data[ctrl.state.currentSelection][place]'>
+            {{project}}
+        </div>
     </div>
 </div>

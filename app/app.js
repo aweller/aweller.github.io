@@ -63,13 +63,12 @@ angular.module('cv')
                 var focus = root,
                     nodes = pack.nodes(root),
                     view;
-                    leafs = nodes.filter(function(d){
-                  return !d.children;
-                })
 
                 function nodeMouseIn() {
                     console.log('nodeMouseIn!', [this, this.__data__.name])
-                    ctrl.state.currentSelection = this.__data__.name
+                    var skill = this.__data__.name
+                    ctrl.state.currentSelection = skill
+                    ctrl.updateCurrentWorkplaces(skill)
                     scope.$apply();
                 }
 
@@ -89,6 +88,7 @@ angular.module('cv')
                         if (focus !== d) zoom(d), d3.event.stopPropagation();
                     })
                     .on("mouseenter", nodeMouseIn);
+
 
                 var text = svg.selectAll("text")
                     .data(nodes)
@@ -153,40 +153,6 @@ angular.module('cv')
                         return d.r * k;
                     });
                 }
-
-                ///////////////////////////////////////////////////
-                
-                // var leafs = svg.selectAll("circle")
-                //     .data(leafs)
-                //     .enter().append("circle")
-                //     .attr("name", function(d) {
-                //         return d.name
-                //     })
-                //     .on("mouseenter", nodeMouseIn);
-
-                // function leafMouseIn() {
-                //     console.log('leafMouseIn!', [this, this.__data__.name])
-                //     ctrl.state.currentSelection = this.__data__.name
-                //     scope.$apply();
-                // }
-
-                // var leafs = node.filter(function(d){
-                //   return !d.children;
-                // }).on("mouseenter", leafMouseIn);
-                // console.log('leafs', leafs)
-
-                // svg.selectAll("circle")
-                //     .data(leafs)
-                //     .enter().append("circle")
-                //     .on("mouseenter", leafMouseIn);
-
-                // .append("rect")
-                // .attr("width", function(d) { return d.r; })
-                // .attr("height", function(d) { return d.r; })
-                // .attr("x", function(d) { return -d.r/2; })
-                // .attr("y", function(d) { return -d.r/2; });
-
-
             });
 
             d3.select(self.frameElement).style("height", diameter + "px");
@@ -200,11 +166,22 @@ angular.module('cv')
             bindToController: true, // bind incoming scope to controller (i.e. that.x instead of scope.x)
             scope: {},
             controller: ['$scope', '$http', function($scope, $http) {
-                
+
                 var that = this
 
                 $scope.hello = 'The skillTree controller!'
                 that.skillFilePath = "app/data/skills.json"
+                that.workplaces = ['ONT', 'COURSE', 'LIFE', 'COMPU', 'PHD']
+                that.prettyWorkplaces = {
+                    'ONT': '2014-2016: Oxford Nanopore Technologies',
+                    'COURSE': '2012-2016: Python course instructor',
+                    'LIFE': '2013-2014: Life Technologies',
+                    'COMPU': '2012-2013: Computomics GmbH',
+                    'PHD': '2007-2013: Max Planck Institute Tuebingen'
+                }
+
+
+                that.currentWorkplaces = []
 
                 that.state = {};
                 that.state.currentSelection = 'None'
@@ -222,6 +199,16 @@ angular.module('cv')
                     function(msg, code) {
                         console.error(msg, code)
                     });
+
+                that.updateCurrentWorkplaces = function(skill) {
+                    that.currentWorkplaces = that.workplaces.filter(function(place) {
+                        if (that.state.cv_data[that.state.currentSelection] == undefined) {
+                            return false
+                        } else {
+                            return that.state.cv_data[that.state.currentSelection][place] != null
+                        }
+                    })
+                }
             }]
         }
     });
