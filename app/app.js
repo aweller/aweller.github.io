@@ -64,10 +64,18 @@ angular.module('cv')
                     nodes = pack.nodes(root),
                     view;
 
+                console.log(nodes)
+
                 function nodeMouseIn() {
-                    console.log('nodeMouseIn!', [this, this.__data__.name])
+                    console.log('nodeMouseIn!', [this, this.__data__])
                     var skill = this.__data__.name
+                    var nodePath = getNodePath(this)
+                    updateBreadcrumbs(nodePath)
+
                     ctrl.state.currentSelection = skill
+                    ctrl.state.currentPath = nodePath.map(function(node) {
+                        return node.name
+                    })
                     ctrl.updateCurrentWorkplaces(skill)
                     scope.$apply();
                 }
@@ -77,6 +85,9 @@ angular.module('cv')
                     .enter().append("circle")
                     .attr("name", function(d) {
                         return d.name
+                    })
+                    .attr("data", function(d) {
+                        return d
                     })
                     .attr("class", function(d) {
                         return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
@@ -153,6 +164,163 @@ angular.module('cv')
                         return d.r * k;
                     });
                 }
+
+                ////////////////////////////////////////////////////////////
+                /// Breadcrumbs
+
+                // d3.select("#breadcrumbs")
+                //     .append("svg:svg")
+                //     .attr("width", 500)
+                //     .attr("height", 50)
+                //     .attr("class", "trail")
+
+                function getNodePath(node) {
+                    for (var path = [], n = node.__data__; n.parent;) path.unshift(n), n = n.parent;
+                    return path
+                }
+
+                // function h(r, d3) {
+                //     var c = [];
+                //     c.push("0,0");
+                //     c.push(r.w + ",0");
+                //     c.push(r.w + r.t + "," + r.h / 2);
+                //     c.push(r.w + "," + r.h);
+                //     c.push("0," + r.h);
+                //     d3 > 0 && c.push(r.t + "," + r.h / 2);
+                //     return c.join(" ");
+                // }
+
+                // function updateBreadcrumbs(a) {
+                //     // a[a.length - 1]._color, a.length;
+                //     var trail = d3.select("#breadcrumbs .trail")
+                //         .selectAll("g")
+                //         .remove();
+
+                //     trail = d3.select("#breadcrumbs .trail")
+                //         .selectAll("g")
+                //         .data(a, function(a) {
+                //             return a.key + a.depth
+                //         });
+
+                //     var arrows = trail.enter().append("svg:g");
+                //     arrows.append("svg:polygon")
+                //         .attr("points", h)
+                //         .style("fill", function(a) {
+                //             return a._color
+                //         });
+
+                //     arrows.append("svg:text")
+                //         .attr("x", r.w / 2 + 2)
+                //         .attr("y", r.h / 2)
+                //         .attr("dy", "0.35em")
+                //         .attr("text-anchor", "middle")
+                //         .attr("class", "breadcumb-text")
+                //         .style("fill", function(a) {
+                //             return getcolor(d3.rgb(a._color)) < 150 ? "#fff" : "#000"
+                //         })
+                //         .text(function(a) {
+                //             return a.key
+                //         });
+
+                //     trail.attr("transform", function(a, b) {
+                //         return "translate(" + b * (r.w + r.s) + ", 0)"
+                //     });
+                //     trail.exit().remove()
+
+                //     d3.select(".trail").style("visibility", "")
+                // }
+
+                ////////////////////////////////////////////////////////////
+                /// Breadcrumbs v2 from
+                /// http://bl.ocks.org/kerryrodden/7090426
+                
+                
+                // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
+                var b = {
+                    w: 150,
+                    h: 30,
+                    s: 3,
+                    t: 10
+                };
+
+                // Mapping of step names to colors.
+                var colors = {
+                    "home": "#5687d1",
+                    "product": "#7b615c",
+                    "search": "#de783b",
+                    "account": "#6ab975",
+                    "other": "#a173d1",
+                    "end": "#bbbbbb"
+                };
+
+                function initializeBreadcrumbTrail() {
+                    // Add the svg area.
+                    var trail = d3.select("#breadcrumbs").append("svg:svg")
+                        .attr("width", 750)
+                        .attr("height", 50)
+                        .attr("id", "trail");
+                }
+                initializeBreadcrumbTrail()
+
+                // Generate a string that describes the points of a breadcrumb polygon.
+                function _breadcrumbPoints(d, i) {
+                    // var letters = d.name.length
+                    // var polyWidth = letters * 15
+                    var polyWidth = b.w
+
+                    var points = [];
+                    points.push("0,0");
+                    points.push(polyWidth + ",0");
+                    points.push(polyWidth + b.t + "," + (b.h / 2));
+                    points.push(polyWidth + "," + b.h);
+                    points.push("0," + b.h);
+                    if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
+                        points.push(b.t + "," + (b.h / 2));
+                    }
+                    return points.join(" ");
+                }
+
+                // Update the breadcrumb trail to show the current sequence.
+                function updateBreadcrumbs(nodeArray) {
+
+                    // Data join; key function combines name and depth (= position in sequence).
+                    var g = d3.select("#trail")
+                        .selectAll("g")
+                        .data(nodeArray, function(d) {
+                            return d.name + d.depth;
+                        });
+
+                    // Add breadcrumb and label for entering nodes.
+                    var entering = g.enter().append("svg:g");
+
+                    entering.append("svg:polygon")
+                        .attr("points", _breadcrumbPoints)
+                        .style("fill", function(d) {
+                            // return colors[d.name];
+                            return 'white'
+                        });
+
+                    entering.append("svg:text")
+                        .attr("x", (b.w + b.t) / 2)
+                        .attr("y", b.h / 2)
+                        .attr("dy", "0.35em")
+                        .attr("text-anchor", "middle")
+                        .text(function(d) {
+                            return d.name;
+                        });
+
+                    // Set position for entering and updating nodes.
+                    g.attr("transform", function(d, i) {
+                        return "translate(" + i * (b.w + b.s) + ", 0)";
+                    });
+
+                    // Remove exiting nodes.
+                    g.exit().remove();
+
+                    // Make the breadcrumb trail visible, if it's hidden.
+                    d3.select("#trail")
+                        .style("visibility", "");
+                }
             });
 
             d3.select(self.frameElement).style("height", diameter + "px");
@@ -185,6 +353,7 @@ angular.module('cv')
 
                 that.state = {};
                 that.state.currentSelection = 'None'
+                that.state.currentPath = 'None'
                 that.state.cv_data = {}
 
                 cv_url = "http://aweller.github.io/app/data/cv.json"

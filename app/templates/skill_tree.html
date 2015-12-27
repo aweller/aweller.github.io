@@ -1,17 +1,22 @@
-<div class="col-lg-8">
-    <div id='tree'></div>
+<div class='row'>
+    <div id='breadcrumbs'></div>
 </div>
-<div class="col-lg-4">
-    <div class='row'>
-        Current selection: {{ctrl.state.currentSelection}}
+<div class='row'>
+    <div class="col-lg-8">
+        <div id='tree'></div>
     </div>
-<!--     <div class='row'>
+    <div class="col-lg-4">
+        <!--     <div class='row'>
+        Current selection: {{ctrl.state.currentPath}}
+    </div> -->
+        <!--     <div class='row'>
         {{ctrl.state.cv_data[ctrl.state.currentSelection]}}
     </div> -->
-    <div class='row' ng-repeat='place in ctrl.currentWorkplaces'>
-        <h4>{{ctrl.prettyWorkplaces[place]}}</h4>
-        <div class='row' ng-repeat='project in ctrl.state.cv_data[ctrl.state.currentSelection][place]'>
-            {{project}}
+        <div class='row' ng-repeat='place in ctrl.currentWorkplaces'>
+            <h4>{{ctrl.prettyWorkplaces[place]}}</h4>
+            <div class='row' ng-repeat='project in ctrl.state.cv_data[ctrl.state.currentSelection][place]'>
+                {{project}}
+            </div>
         </div>
     </div>
 </div>
