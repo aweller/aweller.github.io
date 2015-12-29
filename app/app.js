@@ -41,15 +41,25 @@ angular.module('cv')
 
         function SkillTreeDirective(scope, el, attr, ctrl) {
 
-            var margin = 20,
-                diameter = 800;
+
+            /////////////////////////
+            /// Colors
+
+            // #5CB85C // green
+            // #5BC0DE // blue
+            // #9bd8eb / light blue
+            // #F0AD4E // yellow
+            // #f6ce95 // light yellow
+            // #DF691A // orange
+            // #D9534F // red
 
             // default values (ugly)
             // var minColor = "hsl(152,80%,80%)"
             // var maxColor = "hsl(228,30%,40%)"
 
             // superhero bootstrap
-            var minColor = "hsl(209.2,30.1%,24.1%)"
+            var minColor = "hsl(209.2,30.1%,24.1%)" // dark blue (superhero background color)
+            var black = "#000000"
                 // var maxColor = "hsl(210,16.1%,36.5%)" // darker
             var maxColor = "hsl(0,0%,92.2%)" // lighter
 
@@ -57,6 +67,30 @@ angular.module('cv')
                 .domain([-1, 5])
                 .range([minColor, maxColor])
                 .interpolate(d3.interpolateHcl);
+
+            var backgroundColor = "rgb(43,62,80)"
+
+            var skillDomains = ['flare', "Domain knowledge", "Coding", "Data Analysis"]
+            var skillDomainMaxColors = {
+                'flare': "#2b3e50",
+                "Domain knowledge": "#5BC0DE",
+                "Coding": "#F0AD4E",
+                "Data Analysis": "#D9534F",
+            };
+
+            var skillDomainColorRanges = {};
+            skillDomains.forEach(function(domain) {
+                skillDomainColorRanges[domain] = d3.scale.linear()
+                    .domain([-1, 5])
+                    .range([minColor, skillDomainMaxColors[domain]])
+                    .interpolate(d3.interpolateHcl);
+            })
+            console.log('skillDomainColorRanges', skillDomainColorRanges)
+
+            /////////////////////////
+
+            var margin = 20,
+                diameter = 800;
 
             var pack = d3.layout.pack()
                 .padding(2)
@@ -83,7 +117,7 @@ angular.module('cv')
                 function nodeMouseIn() {
                     console.log('nodeMouseIn!', [this, this.__data__])
                     var skill = this.__data__.name
-                    var nodePath = getNodePath(this)
+                    var nodePath = getNodePath(this.__data__)
                     updateBreadcrumbs(nodePath)
 
                     ctrl.state.currentSkill = skill
@@ -93,6 +127,19 @@ angular.module('cv')
                     ctrl.updateCurrentWorkplaces(skill)
                     ctrl.updateCurrentProjects(skill)
                     scope.$apply();
+                }
+
+                var _calculateFill = function(d) {
+                    var skillDomain = getNodePath(d)[0]
+                    if (skillDomain == undefined) {
+                        skillDomain = 'flare'
+                        return 'rgb(67, 89, 102)'
+                    } else {
+                        skillDomain = skillDomain.name
+                        var scale = skillDomainColorRanges[skillDomain]
+                            // console.log(skillDomainColorRanges, d, skillDomain, scale)
+                        return scale(d.depth)
+                    }
                 }
 
                 var circle = svg.selectAll("circle")
@@ -107,9 +154,10 @@ angular.module('cv')
                     .attr("class", function(d) {
                         return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
                     })
-                    .style("fill", function(d) {
-                        return d.children ? color(d.depth) : null;
-                    })
+                    // .style("fill", function(d) {
+                    //     return d.children ? color(d.depth) : null;
+                    // })
+                    .style("fill", _calculateFill)
                     .on("click", function(d) {
                         if (focus !== d) zoom(d), d3.event.stopPropagation();
                     })
@@ -134,7 +182,7 @@ angular.module('cv')
                 var node = svg.selectAll("circle,text");
 
                 d3.select("body")
-                    .style("background", color(-1))
+                    .style("background", backgroundColor)
                     .on("click", function() {
                         zoom(root);
                     });
@@ -185,7 +233,7 @@ angular.module('cv')
                 /// http://bl.ocks.org/kerryrodden/7090426
 
                 function getNodePath(node) {
-                    for (var path = [], n = node.__data__; n.parent;) path.unshift(n), n = n.parent;
+                    for (var path = [], n = node; n.parent;) path.unshift(n), n = n.parent;
                     return path
                 }
 
@@ -195,16 +243,6 @@ angular.module('cv')
                     h: 30,
                     s: 3,
                     t: 10
-                };
-
-                // Mapping of step names to colors.
-                var colors = {
-                    "home": "#5687d1",
-                    "product": "#7b615c",
-                    "search": "#de783b",
-                    "account": "#6ab975",
-                    "other": "#a173d1",
-                    "end": "#bbbbbb"
                 };
 
                 function initializeBreadcrumbTrail() {
@@ -252,10 +290,12 @@ angular.module('cv')
                         .transition()
                         .duration(250)
                         .attr("points", _breadcrumbPoints)
-                        .style("fill", function(d) {
-                            // return colors[d.name];
-                            return 'white'
-                        });
+                        .style("fill", _calculateFill)
+                        // .style("fill", function(d) {
+                        //     // return colors[d.name];
+                        //     return 'white'
+                        // });
+
 
                     entering.append("svg:text")
                         .attr("x", (b.w + b.t) / 2)
@@ -296,13 +336,12 @@ angular.module('cv')
 
                 $scope.hello = 'The skillTree controller!'
                 that.skillFilePath = "app/data/skills.json"
-                that.workplaces = ['ONT', 'COURSE', 'LIFE', 'COMPU', 'PHD']
+                that.workplaces = ['ONT', 'COURSE', 'LIFE', 'PHD']
                 that.prettyWorkplaces = {
-                    'ONT': '2014-2016: Oxford Nanopore Technologies',
-                    'COURSE': '2012-2016: Python course instructor',
-                    'LIFE': '2013-2014: Life Technologies',
-                    'COMPU': '2012-2013: Computomics GmbH',
-                    'PHD': '2007-2013: Max Planck Institute Tuebingen'
+                    'ONT': ['2014-2016', 'Oxford Nanopore Technologies', 'Data Scientist'],
+                    'COURSE': ['2012-2014', 'various', 'Python course instructor'],
+                    'LIFE': ['2013-2014', 'Life Technologies', 'Bioinformatics Scientist'],
+                    'PHD': ['2007-2013', 'Max Planck Institute Tuebingen', 'Computational Biology PhD']
                 }
 
                 that.cv_data = {}

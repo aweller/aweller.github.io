@@ -4,20 +4,20 @@
  -->
 <div class='row'>
     <div class="col-lg-8">
-    <div class='row'>
-    <div id='breadcrumbs' class='breadcrumb-container'></div>
-</div>
-      <div class='row'>
-        <div id='tree' style="text-align:center;"></div>
-</div>
-
+        <div class='row breadcrumb-container'>
+            <div id='breadcrumbs' class='breadcrumb-container'></div>
+        </div>
+        <div class='row'>
+            <div id='tree' style="text-align:center;"></div>
+        </div>
     </div>
     <div class="col-lg-4 well">
-        <h4>Curriculum vitae</h4>
+        <h3>Curriculum vitae</h3>
         <div ng-repeat='place in ctrl.workplaces'>
             <br>
-            <h4>{{ctrl.prettyWorkplaces[place]}}</h4>
-            <div class="base-class" ng-repeat="project in ctrl.cv_data['Cross-domain collaboration'][place]" ng-class="{'small':ctrl.state.currentProjects.indexOf(project) == -1, 'text-danger':ctrl.state.currentProjects.indexOf(project) > -1}">
+            <h6>{{ctrl.prettyWorkplaces[place][0]}}</h6>
+            <h4>{{ctrl.prettyWorkplaces[place][2]}} ({{ctrl.prettyWorkplaces[place][1]}})</h4>
+            <div class="base-class" ng-repeat="project in ctrl.cv_data['Cross-domain collaboration'][place]" ng-class="{'cv-highlight ':ctrl.state.currentProjects.indexOf(project) > -1, 'cv-unselected ':ctrl.state.currentProjects.indexOf(project) == -1}">
                 {{project}}
             </div>
         </div>
