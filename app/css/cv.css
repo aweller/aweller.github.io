@@ -7,6 +7,17 @@
     box-shadow: 5px 5px 5px #888888;
 }
 
+.breadcrumb-container {
+    margin: 5px 0px 0px 30px;
+}
+
+/*////////////////////////////////////////////////////////////
+/// Animation
+*/
+
+.base-class {
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
 
 /*////////////////////////////////////////////////////////////
 /// Tree*/

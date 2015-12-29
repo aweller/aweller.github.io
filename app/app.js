@@ -1,5 +1,6 @@
 angular.module('cv', [
     'ngRoute',
+    'ngAnimate',
     'ui.bootstrap'
 ])
 
