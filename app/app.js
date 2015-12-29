@@ -10,6 +10,10 @@ angular.module('cv', [
         templateUrl: 'app/templates/skills.html',
         controller: 'MainController'
     });
+    $routeProvider.when('/contact', {
+        templateUrl: 'app/templates/contact.html',
+        controller: 'MainController'
+    });
     $routeProvider.otherwise({
         redirectTo: '/skills'
     });
@@ -46,12 +50,12 @@ angular.module('cv')
 
             // superhero bootstrap
             var minColor = "hsl(209.2,30.1%,24.1%)"
-            // var maxColor = "hsl(210,16.1%,36.5%)" // darker
+                // var maxColor = "hsl(210,16.1%,36.5%)" // darker
             var maxColor = "hsl(0,0%,92.2%)" // lighter
 
             var color = d3.scale.linear()
                 .domain([-1, 5])
-                .range([minColor, maxColor])                
+                .range([minColor, maxColor])
                 .interpolate(d3.interpolateHcl);
 
             var pack = d3.layout.pack()
@@ -177,74 +181,13 @@ angular.module('cv')
                 }
 
                 ////////////////////////////////////////////////////////////
-                /// Breadcrumbs
-
-                // d3.select("#breadcrumbs")
-                //     .append("svg:svg")
-                //     .attr("width", 500)
-                //     .attr("height", 50)
-                //     .attr("class", "trail")
+                /// Breadcrumbs v2 from
+                /// http://bl.ocks.org/kerryrodden/7090426
 
                 function getNodePath(node) {
                     for (var path = [], n = node.__data__; n.parent;) path.unshift(n), n = n.parent;
                     return path
                 }
-
-                // function h(r, d3) {
-                //     var c = [];
-                //     c.push("0,0");
-                //     c.push(r.w + ",0");
-                //     c.push(r.w + r.t + "," + r.h / 2);
-                //     c.push(r.w + "," + r.h);
-                //     c.push("0," + r.h);
-                //     d3 > 0 && c.push(r.t + "," + r.h / 2);
-                //     return c.join(" ");
-                // }
-
-                // function updateBreadcrumbs(a) {
-                //     // a[a.length - 1]._color, a.length;
-                //     var trail = d3.select("#breadcrumbs .trail")
-                //         .selectAll("g")
-                //         .remove();
-
-                //     trail = d3.select("#breadcrumbs .trail")
-                //         .selectAll("g")
-                //         .data(a, function(a) {
-                //             return a.key + a.depth
-                //         });
-
-                //     var arrows = trail.enter().append("svg:g");
-                //     arrows.append("svg:polygon")
-                //         .attr("points", h)
-                //         .style("fill", function(a) {
-                //             return a._color
-                //         });
-
-                //     arrows.append("svg:text")
-                //         .attr("x", r.w / 2 + 2)
-                //         .attr("y", r.h / 2)
-                //         .attr("dy", "0.35em")
-                //         .attr("text-anchor", "middle")
-                //         .attr("class", "breadcumb-text")
-                //         .style("fill", function(a) {
-                //             return getcolor(d3.rgb(a._color)) < 150 ? "#fff" : "#000"
-                //         })
-                //         .text(function(a) {
-                //             return a.key
-                //         });
-
-                //     trail.attr("transform", function(a, b) {
-                //         return "translate(" + b * (r.w + r.s) + ", 0)"
-                //     });
-                //     trail.exit().remove()
-
-                //     d3.select(".trail").style("visibility", "")
-                // }
-
-                ////////////////////////////////////////////////////////////
-                /// Breadcrumbs v2 from
-                /// http://bl.ocks.org/kerryrodden/7090426
-
 
                 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
                 var b = {
@@ -302,9 +245,12 @@ angular.module('cv')
                         });
 
                     // Add breadcrumb and label for entering nodes.
-                    var entering = g.enter().append("svg:g");
+                    var entering = g.enter()
+                        .append("svg:g")
 
                     entering.append("svg:polygon")
+                        .transition()
+                        .duration(250)
                         .attr("points", _breadcrumbPoints)
                         .style("fill", function(d) {
                             // return colors[d.name];
