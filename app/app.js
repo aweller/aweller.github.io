@@ -37,11 +37,20 @@ angular.module('cv')
         function SkillTreeDirective(scope, el, attr, ctrl) {
 
             var margin = 20,
-                diameter = 960;
+                diameter = 800;
+
+            // default values (ugly)
+            // var minColor = "hsl(152,80%,80%)"
+            // var maxColor = "hsl(228,30%,40%)"
+
+            // superhero bootstrap
+            var minColor = "hsl(209.2,30.1%,24.1%)"
+            // var maxColor = "hsl(210,16.1%,36.5%)" // darker
+            var maxColor = "hsl(0,0%,92.2%)" // lighter
 
             var color = d3.scale.linear()
                 .domain([-1, 5])
-                .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+                .range([minColor, maxColor])                
                 .interpolate(d3.interpolateHcl);
 
             var pack = d3.layout.pack()
@@ -72,11 +81,12 @@ angular.module('cv')
                     var nodePath = getNodePath(this)
                     updateBreadcrumbs(nodePath)
 
-                    ctrl.state.currentSelection = skill
+                    ctrl.state.currentSkill = skill
                     ctrl.state.currentPath = nodePath.map(function(node) {
                         return node.name
                     })
                     ctrl.updateCurrentWorkplaces(skill)
+                    ctrl.updateCurrentProjects(skill)
                     scope.$apply();
                 }
 
@@ -233,11 +243,11 @@ angular.module('cv')
                 ////////////////////////////////////////////////////////////
                 /// Breadcrumbs v2 from
                 /// http://bl.ocks.org/kerryrodden/7090426
-                
-                
+
+
                 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
                 var b = {
-                    w: 150,
+                    w: 175,
                     h: 30,
                     s: 3,
                     t: 10
@@ -348,13 +358,14 @@ angular.module('cv')
                     'PHD': '2007-2013: Max Planck Institute Tuebingen'
                 }
 
-
+                that.cv_data = {}
                 that.currentWorkplaces = []
+                that.currentProjects = []
 
                 that.state = {};
-                that.state.currentSelection = 'None'
+                that.state.currentSkill = 'None'
                 that.state.currentPath = 'None'
-                that.state.cv_data = {}
+                that.state.currentProjects = []
 
                 cv_url = "http://aweller.github.io/app/data/cv.json"
                 $http({
@@ -363,7 +374,7 @@ angular.module('cv')
                 }).then(
                     function(response) {
                         console.log('Got data:', response)
-                        that.state.cv_data = response.data
+                        that.cv_data = response.data
                     },
                     function(msg, code) {
                         console.error(msg, code)
@@ -371,12 +382,26 @@ angular.module('cv')
 
                 that.updateCurrentWorkplaces = function(skill) {
                     that.currentWorkplaces = that.workplaces.filter(function(place) {
-                        if (that.state.cv_data[that.state.currentSelection] == undefined) {
+                        if (that.cv_data[that.state.currentSkill] == undefined) {
                             return false
                         } else {
-                            return that.state.cv_data[that.state.currentSelection][place] != null
+                            return that.cv_data[that.state.currentSkill][place] != null
                         }
                     })
+                }
+
+                that.updateCurrentProjects = function(skill) {
+                    var projects = []
+                    that.workplaces.forEach(function(place) {
+                        if (that.cv_data[skill] != undefined) {
+                            if (that.cv_data[skill][place] != undefined) {
+                                that.cv_data[skill][place].forEach(function(project) {
+                                    projects.push(project)
+                                })
+                            }
+                        }
+                    })
+                    that.state.currentProjects = projects
                 }
             }]
         }
