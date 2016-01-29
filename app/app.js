@@ -90,7 +90,8 @@ angular.module('cv')
             /////////////////////////
 
             var margin = 20,
-                diameter = 800;
+                diameter = angular.element(el.parent())[0].offsetWidth;
+            diameter = diameter * (5 / 6) * (2 / 3) // adapt to bootstrap grid slotß
 
             var pack = d3.layout.pack()
                 .padding(2)
@@ -112,10 +113,9 @@ angular.module('cv')
                     nodes = pack.nodes(root),
                     view;
 
-                console.log(nodes)
 
                 function nodeMouseIn() {
-                    console.log('nodeMouseIn!', [this, this.__data__])
+                    // console.log('nodeMouseIn!', [this, this.__data__])
                     var skill = this.__data__.name
                     var nodePath = getNodePath(this.__data__)
                     updateBreadcrumbs(nodePath)
@@ -172,7 +172,8 @@ angular.module('cv')
                         return d.parent === root ? 1 : 0;
                     })
                     .style("display", function(d) {
-                        return d.parent === root ? "inline" : "none";
+                        var display = d.parent === root ? "inline" : "none"
+                        return display;
                     })
                     .text(function(d) {
                         return d.name;
@@ -190,6 +191,12 @@ angular.module('cv')
                 zoomTo([root.x, root.y, root.r * 2 + margin]);
 
                 function zoom(d) {
+                    // avoid zooming to tip of branch
+                    if (!d.children) {
+                        d = d.parent
+                    }
+
+
                     var focus0 = focus;
                     focus = d;
 
@@ -207,7 +214,8 @@ angular.module('cv')
                             return d.parent === focus || this.style.display === "inline";
                         })
                         .style("fill-opacity", function(d) {
-                            return d.parent === focus ? 1 : 0;
+                            var opacity = (d.parent === focus) || (d.name == focus.name) ? 1 : 0
+                            return opacity;
                         })
                         .each("start", function(d) {
                             if (d.parent === focus) this.style.display = "inline";
