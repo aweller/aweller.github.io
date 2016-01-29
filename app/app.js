@@ -91,7 +91,7 @@ angular.module('cv')
 
             var margin = 20,
                 diameter = angular.element(el.parent())[0].offsetWidth;
-            diameter = diameter * (5 / 6) * (2 / 3) // adapt to bootstrap grid slotß
+                diameter = diameter * (5 / 6) * (2 / 3) // adapt to bootstrap grid slotß
 
             var pack = d3.layout.pack()
                 .padding(2)
