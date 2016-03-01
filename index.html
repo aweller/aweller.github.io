@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css" />
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+
     <!-- <link rel="stylesheet" href="app/css/flatly_bootstrap.css" /> -->
     <link rel="stylesheet" href="app/css/superhero_bootstrap.css" />
     <link rel="stylesheet" href="app/css/cv.css" />
@@ -17,11 +18,16 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>   
     <script src="bower_components/angular-animate/angular-animate.js"></script>   
-
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/highcharts/highcharts.js"></script>
+    <script src="bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
+
     <script src="app/app.js"></script>
+    <script src="app/highchartsDirective.js"></script>
+    <script src="app/weightedChoice.js"></script>
 </head>
 
 <body>
@@ -32,6 +38,9 @@
         <ul class="nav navbar-nav">
             <li ng-class="{ active: isActive('/Curriculum Vitae')}"><a href="#skills">Skills</a>
             </li>
+            <li ng-class="{ active: isActive('/WeightedChoice')}"><a href="#choice">WeightedChoice</a>
+            </li>
+
             <li ng-class="{ active: isActive('/contact')}"><a href="#contact">Contact</a>
             </li>
         </ul>

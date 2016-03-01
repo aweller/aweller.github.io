@@ -1,4 +1,5 @@
 angular.module('cv', [
+    'choiceApp', 
     'ngRoute',
     'ngAnimate',
     'ui.bootstrap'
@@ -13,6 +14,10 @@ angular.module('cv', [
     $routeProvider.when('/contact', {
         templateUrl: 'app/templates/contact.html',
         controller: 'MainController'
+    });
+    $routeProvider.when('/choice', {
+        templateUrl: 'app/templates/choiceView.html',
+        controller: 'weightedChoiceController'
     });
     $routeProvider.otherwise({
         redirectTo: '/skills'

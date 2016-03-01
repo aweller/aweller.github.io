@@ -1,0 +1,391 @@
+(function () {
+    angular.module('cv')
+        .factory('highchartsNGUtils', highchartsNGUtils)
+        .directive('highchart', ['highchartsNGUtils', '$timeout', highchart]);
+
+    function highchartsNGUtils() {
+
+        return {
+
+            //IE8 support
+            indexOf: function (arr, find, i /*opt*/) {
+                if (i === undefined) i = 0;
+                if (i < 0) i += arr.length;
+                if (i < 0) i = 0;
+                for (var n = arr.length; i < n; i++)
+                    if (i in arr && arr[i] === find)
+                        return i;
+                return -1;
+            },
+
+            prependMethod: function (obj, method, func) {
+                var original = obj[method];
+                obj[method] = function () {
+                    var args = Array.prototype.slice.call(arguments);
+                    func.apply(this, args);
+                    if (original) {
+                        return original.apply(this, args);
+                    } else {
+                        return;
+                    }
+
+                };
+            },
+
+            deepExtend: function deepExtend(destination, source) {
+                //Slightly strange behaviour in edge cases (e.g. passing in non objects)
+                //But does the job for current use cases.
+                if (angular.isArray(source)) {
+                    destination = angular.isArray(destination) ? destination : [];
+                    for (var i = 0; i < source.length; i++) {
+                        destination[i] = deepExtend(destination[i] || {}, source[i]);
+                    }
+                } else if (angular.isObject(source)) {
+                    for (var property in source) {
+                        destination[property] = deepExtend(destination[property] || {}, source[property]);
+                    }
+                } else {
+                    destination = source;
+                }
+                return destination;
+            }
+        };
+    }
+
+    function highchart(highchartsNGUtils, $timeout) {
+
+        // acceptable shared state
+        var seriesId = 0;
+        var ensureIds = function (series) {
+            var changed = false;
+            angular.forEach(series, function (s) {
+                if (!angular.isDefined(s.id)) {
+                    s.id = 'series-' + seriesId++;
+                    changed = true;
+                }
+            });
+            return changed;
+        };
+
+        // immutable
+        var axisNames = ['xAxis', 'yAxis'];
+        var chartTypeMap = {
+            'stock': 'StockChart',
+            'map': 'Map',
+            'chart': 'Chart'
+        };
+
+        var getMergedOptions = function (scope, element, config) {
+            var mergedOptions = {};
+
+            var defaultOptions = {
+                chart: {
+                    events: {}
+                },
+                title: {},
+                subtitle: {},
+                series: [],
+                credits: {},
+                plotOptions: {},
+                navigator: {enabled: false}
+            };
+
+            if (config.options) {
+                mergedOptions = highchartsNGUtils.deepExtend(defaultOptions, config.options);
+            } else {
+                mergedOptions = defaultOptions;
+            }
+            mergedOptions.chart.renderTo = element[0];
+
+            angular.forEach(axisNames, function (axisName) {
+                if (angular.isDefined(config[axisName])) {
+                    mergedOptions[axisName] = angular.copy(config[axisName]);
+
+                    if (angular.isDefined(config[axisName].currentMin) ||
+                        angular.isDefined(config[axisName].currentMax)) {
+
+                        highchartsNGUtils.prependMethod(mergedOptions.chart.events, 'selection', function (e) {
+                            var thisChart = this;
+                            if (e[axisName]) {
+                                scope.$apply(function () {
+                                    scope.config[axisName].currentMin = e[axisName][0].min;
+                                    scope.config[axisName].currentMax = e[axisName][0].max;
+                                });
+                            } else {
+                                //handle reset button - zoom out to all
+                                scope.$apply(function () {
+                                    scope.config[axisName].currentMin = thisChart[axisName][0].dataMin;
+                                    scope.config[axisName].currentMax = thisChart[axisName][0].dataMax;
+                                });
+                            }
+                        });
+
+                        highchartsNGUtils.prependMethod(mergedOptions.chart.events, 'addSeries', function (e) {
+                            scope.config[axisName].currentMin = this[axisName][0].min || scope.config[axisName].currentMin;
+                            scope.config[axisName].currentMax = this[axisName][0].max || scope.config[axisName].currentMax;
+                        });
+                    }
+                }
+            });
+
+            if (config.title) {
+                mergedOptions.title = config.title;
+            }
+            if (config.subtitle) {
+                mergedOptions.subtitle = config.subtitle;
+            }
+            if (config.credits) {
+                mergedOptions.credits = config.credits;
+            }
+            if (config.size) {
+                if (config.size.width) {
+                    mergedOptions.chart.width = config.size.width;
+                }
+                if (config.size.height) {
+                    mergedOptions.chart.height = config.size.height;
+                }
+            }
+            return mergedOptions;
+        };
+
+        var updateZoom = function (axis, modelAxis) {
+            var extremes = axis.getExtremes();
+            if (modelAxis.currentMin !== extremes.dataMin || modelAxis.currentMax !== extremes.dataMax) {
+                axis.setExtremes(modelAxis.currentMin, modelAxis.currentMax, false);
+            }
+        };
+
+        var processExtremes = function (chart, axis, axisName) {
+            if (axis.currentMin || axis.currentMax) {
+                chart[axisName][0].setExtremes(axis.currentMin, axis.currentMax, true);
+            }
+        };
+
+        var chartOptionsWithoutEasyOptions = function (options) {
+            return highchartsNGUtils.deepExtend({}, options, {data: null, visible: null});
+        };
+
+        var getChartType = function (scope) {
+            if (scope.config === undefined) return 'Chart';
+            return chartTypeMap[('' + scope.config.chartType).toLowerCase()] ||
+                (scope.config.useHighStocks ? 'StockChart' : 'Chart');
+        };
+
+        return {
+            restrict: 'EAC',
+            replace: true,
+            template: '<div></div>',
+            scope: {
+                chart: '=',         /** Binds chart instance to scope, making it accessible outside of the directive */
+                config: '=',        /** Highchart configuration object */
+                disableDataWatch: '='
+            },
+            link: function (scope, element, attrs) {
+                // We keep some scope.chart-specific variables here as a closure
+                // instead of storing them on 'scope'.
+
+                // prevSeriesOptions is maintained by processSeries
+                var prevSeriesOptions = {};
+
+                var processSeries = function (series) {
+                    var i;
+                    var ids = [];
+
+                    if (series) {
+                        var setIds = ensureIds(series);
+                        if (setIds) {
+                            //If we have set some ids this will trigger another digest cycle.
+                            //In this scenario just return early and let the next cycle take care of changes
+                            return false;
+                        }
+
+                        //Find series to add or update
+                        angular.forEach(series, function (s) {
+                            ids.push(s.id);
+                            var chartSeries = scope.chart.get(s.id);
+                            if (chartSeries) {
+                                if (!angular.equals(prevSeriesOptions[s.id], chartOptionsWithoutEasyOptions(s))) {
+                                    chartSeries.update(angular.copy(s), false);
+                                } else {
+                                    if (s.visible !== undefined && chartSeries.visible !== s.visible) {
+                                        chartSeries.setVisible(s.visible, false);
+                                    }
+                                    chartSeries.setData(angular.copy(s.data), false);
+                                }
+                            } else {
+                                scope.chart.addSeries(angular.copy(s), false);
+                            }
+                            prevSeriesOptions[s.id] = chartOptionsWithoutEasyOptions(s);
+                        });
+
+                        //  Shows no data text if all series are empty
+                        if (scope.config.noData) {
+                            var chartContainsData = false;
+
+                            for (i = 0; i < series.length; i++) {
+                                if (series[i].data && series[i].data.length > 0) {
+                                    chartContainsData = true;
+
+                                    break;
+                                }
+                            }
+
+                            if (!chartContainsData) {
+                                scope.chart.showLoading(scope.config.noData);
+                            } else {
+                                scope.chart.hideLoading();
+                            }
+                        }
+                    }
+
+                    //Now remove any missing series
+                    for (i = scope.chart.series.length - 1; i >= 0; i--) {
+                        var s = scope.chart.series[i];
+                        if (s.options.id !== 'highcharts-navigator-series' && highchartsNGUtils.indexOf(ids, s.options.id) < 0) {
+                            s.remove(false);
+                        }
+                    }
+
+                    return true;
+                };
+
+                // scope.chart is maintained by initChart
+                scope.chart = false;
+                var initChart = function () {
+                    if (scope.chart) scope.chart.destroy();
+                    prevSeriesOptions = {};
+                    var config = scope.config || {};
+                    var mergedOptions = getMergedOptions(scope, element, config);
+                    var func = config.func || undefined;
+                    var chartType = getChartType(scope);
+
+                    scope.chart = new Highcharts[chartType](mergedOptions, func);
+
+                    for (var i = 0; i < axisNames.length; i++) {
+                        if (config[axisNames[i]]) {
+                            processExtremes(scope.chart, config[axisNames[i]], axisNames[i]);
+                        }
+                    }
+                    if (config.loading) {
+                        scope.chart.showLoading();
+                    }
+                    config.getHighcharts = function () {
+                        return scope.chart;
+                    };
+
+                };
+                initChart();
+
+
+                if (scope.disableDataWatch) {
+                    scope.$watchCollection('config.series', function (newSeries, oldSeries) {
+                        processSeries(newSeries);
+                        scope.chart.redraw();
+                    });
+                } else {
+                    scope.$watch('config.series', function (newSeries, oldSeries) {
+                        var needsRedraw = processSeries(newSeries);
+                        if (needsRedraw) {
+                            scope.chart.redraw();
+                        }
+                    }, true);
+                }
+
+                scope.$watch('config.title', function (newTitle) {
+                    scope.chart.setTitle(newTitle, true);
+                }, true);
+
+                scope.$watch('config.subtitle', function (newSubtitle) {
+                    scope.chart.setTitle(true, newSubtitle);
+                }, true);
+
+                scope.$watch('config.loading', function (loading) {
+                    if (loading) {
+                        scope.chart.showLoading(loading === true ? null : loading);
+                    } else {
+                        scope.chart.hideLoading();
+                    }
+                });
+                scope.$watch('config.noData', function (noData) {
+                    if (scope.config && scope.config.loading) {
+                        scope.chart.showLoading(noData);
+                    }
+                }, true);
+
+                scope.$watch('config.credits.enabled', function (enabled) {
+                    if (enabled) {
+                        scope.chart.credits.show();
+                    } else if (scope.chart.credits) {
+                        scope.chart.credits.hide();
+                    }
+                });
+
+                scope.$watch(getChartType, function (chartType, oldChartType) {
+                    if (chartType === oldChartType) return;
+                    initChart();
+                });
+
+                angular.forEach(axisNames, function (axisName) {
+                    scope.$watch('config.' + axisName, function (newAxes, oldAxes) {
+                        if (newAxes === oldAxes || !newAxes) {
+                            return;
+                        }
+
+                        if (angular.isArray(newAxes)) {
+
+                            for (var axisIndex = 0; axisIndex < newAxes.length; axisIndex++) {
+                                var axis = newAxes[axisIndex];
+
+                                if (axisIndex < scope.chart[axisName].length) {
+                                    scope.chart[axisName][axisIndex].update(axis, false);
+                                    updateZoom(scope.chart[axisName][axisIndex], angular.copy(axis));
+                                }
+
+                            }
+
+                        } else {
+                            // update single axis
+                            scope.chart[axisName][0].update(newAxes, false);
+                            updateZoom(scope.chart[axisName][0], angular.copy(newAxes));
+                        }
+
+                        scope.chart.redraw();
+                    }, true);
+                });
+                scope.$watch('config.options', function (newOptions, oldOptions, scope) {
+                    //do nothing when called on registration
+                    if (newOptions === oldOptions) return;
+                    initChart();
+                    processSeries(scope.config.series);
+                    scope.chart.redraw();
+                }, true);
+
+                scope.$watch('config.size', function (newSize, oldSize) {
+                    if (newSize === oldSize) return;
+                    if (newSize) {
+                        scope.chart.setSize(newSize.width || scope.chart.chartWidth, newSize.height || scope.chart.chartHeight);
+                    }
+                }, true);
+
+                scope.$on('highchartsng.reflow', function () {
+                    scope.chart.reflow();
+                });
+
+                scope.$on('$destroy', function () {
+                    if (scope.chart) {
+                        try {
+                            scope.chart.destroy();
+                        } catch (ex) {
+                            // fail silently as highcharts will throw exception if element doesn't exist
+                        }
+
+                        $timeout(function () {
+                            element.remove();
+                        }, 0);
+                    }
+                });
+
+            }
+        };
+    }
+}());
