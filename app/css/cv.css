@@ -1,5 +1,9 @@
 .body {
-    zom: 80%;
+    zoom: 80%;
+}
+
+.explanation {
+  padding: 10px 10px 10px 10px;
 }
 
 .cv-col {

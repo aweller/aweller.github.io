@@ -18,17 +18,23 @@ angular.module('choiceApp')
             restrict: 'E',
             template: [
                 '<div style="width: 100%, height=1000px, margin: 0 auto"></div>',
-                '<button type="button" class="btn btn-default" ng-click="start()">Start</button>',
-                '<button type="button" class="btn btn-default" ng-click="stop()">Stop</button>',
+                '<button type="button" class="btn btn-primary" ng-click="start()">Start</button>',
+                '<button type="button" class="btn btn-primary" ng-click="stop()">Pause</button>',
+                // '<button type="button" class="btn btn-primary" ng-click="reset()">Reset</button>'
             ].join(''),
             link: function choiceLinesLink(scope, elem, attrs) {
 
-                scope.spec = { 0: 0.6, 1: 0.3, 2: 0.1 }
-                scope.series = [createSeries('Common', '#18bc9c'), createSeries('Medium', '#2c3e50'), createSeries('Rare', '#e74c3c')]
-                scope.offset = 0 // Series below this dont get updated anymore
-                scope.maxDraws = 100 // stop after this number of draws
-                scope.frequency = 1 // ms between draws
-                scope.counter = 1 // current X
+
+
+                init = function() {
+                    scope.spec = { 0: 0.6, 1: 0.3, 2: 0.1 }
+                    scope.series = [createSeries('Common', '#18bc9c'), createSeries('Medium', '#2c3e50'), createSeries('Rare', '#e74c3c')]
+                    scope.offset = 0 // Series below this dont get updated anymore
+                    scope.maxDraws = 100 // stop after this number of draws
+                    scope.frequency = 1 // ms between draws
+                    scope.counter = 1 // current X
+                }
+                init()
 
                 function build() {
 
@@ -40,7 +46,7 @@ angular.module('choiceApp')
                                 type: 'spline',
                             },
                             legend: {
-                                enabled:false
+                                enabled: false
                             },
                             // legend: {
                             //     layout: 'vertical',
@@ -150,11 +156,11 @@ angular.module('choiceApp')
                     scope.ticker = setInterval(function() {
                         appendSeries(scope.counter)
                         scope.counter++
-                        if (scope.counter > scope.maxDraws) {
-                            scope.stop()
-                            scope.reset()
-                            scope.start()
-                        }
+                            if (scope.counter > scope.maxDraws) {
+                                scope.stop()
+                                scope.nextRound()
+                                scope.start()
+                            }
                     }, scope.frequency);
                 }
 
@@ -163,13 +169,19 @@ angular.module('choiceApp')
                     clearInterval(scope.ticker);
                 }
 
-                scope.reset = function() {
+                scope.nextRound = function() {
                     scope.counter = 1
                     scope.offset += 3
                     scope.series.push(createSeries('Common', '#18bc9c'))
                     scope.series.push(createSeries('Medium', '#2c3e50'))
                     scope.series.push(createSeries('Rare', '#e74c3c'))
                         // console.log(scope.series)
+                }
+
+                scope.reset = function() {
+                    console.log('Init')
+                    clearInterval(scope.ticker);
+                    init()
                 }
 
                 function setSize() {
